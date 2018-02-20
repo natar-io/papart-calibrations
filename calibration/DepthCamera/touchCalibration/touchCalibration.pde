@@ -25,6 +25,7 @@ import tech.lity.rea.skatolo.events.*;
 import tech.lity.rea.skatolo.gui.controllers.*;
 import tech.lity.rea.skatolo.gui.group.*;
 
+import tech.lity.rea.pointcloud.*;
 import org.openni.*;
 
 import peasy.*;
@@ -97,10 +98,13 @@ void setup(){
       touchInput.
 	  setTouchDetectionCalibration(i,papart.getTouchCalibration(i));
   }
+
+  touchInput.setSimpleTouchDetectionCalibration(papart.getDefaultTouchCalibration());
   
   // After the start() of the camera.
   touchInput.initTouchDetections();
   touchDetections = touchInput.getTouchDetections();
+
 
   // touchDetections[0] = touchInput.getTouchDetection2D();
   // touchDetections[1] = touchInput.getTouchDetection3D();
@@ -153,13 +157,22 @@ void initVirtualCamera(){
 
 
 
+boolean first = true;
+
 void draw(){
     println("Framerate " + frameRate);
+
+    if(first){
+	//	kinectAnalysis.initWithCalibrations(depthCameraDevice);
+	first = false;
+    }
+
     grabImages();
     updateCalibration();
         
     background(0);
 
+    
     if(mouseControl && cam == null){
 	initVirtualCamera();
     }
