@@ -14,7 +14,7 @@ ARDisplay ardisplay;
 float focal, cx, cy;
 PMatrix3D projIntrinsics;
 
-boolean useProjector = false;
+boolean useProjector = true;
 float distancePaper = 600f;  // in millimeter.
 
 PApplet parent;
@@ -102,7 +102,7 @@ void draw() {
     g1.noStroke();
     // Invert some elements here if you use mirroring
     // or your projector/camera is inverted in some way
-    g1.scale(1, -1, 1);
+    g1.scale(-1, 1, 1);
 	
     // g1.modelview.apply(objectArdisplayTransfo);
 
@@ -112,15 +112,15 @@ void draw() {
     //  g1.translate(0, -28, 0);
     
     // Height of the camera...
-       g1.translate(0, -35, 0);
-    g1.fill(50, 50, 200, 120);
+       g1.translate(0, -30, 0);
+    g1.fill(50, 50, 200, 70);
     g1.rect(-9, -9, 112, 112);
 
     fill(200, 200);
     g1.rect(0, 0, 95, 95);
 
-    g1.fill(0, 191, 100, 140);
-    g1.rect(141, 75, 47, 47);
+    g1.fill(0, 191, 100, 60);
+    g1.rect(141.5f, 75, 47, 47);
 
     ardisplay.endDraw();
 

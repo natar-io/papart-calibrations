@@ -41,14 +41,14 @@ public class ControlFrame extends PApplet {
 
     skatolo.addSlider("focal").plugTo(parent, "focal")
 	.setPosition(10, 20)
-	.setRange(400, 600)
+	.setRange(900, 1200)
 	.setSize(800,20)
 	.setValue(1000)
 	;
 
     skatolo.addSlider("cx").plugTo(parent, "cx")
 	.setPosition(10, 60)
-	.setRange(0, width )
+	.setRange(0, width  *2)
 	.setSize(800,20)
 	.setValue(width / 2)
 	;
@@ -56,7 +56,7 @@ public class ControlFrame extends PApplet {
     skatolo.addSlider("cy").plugTo(parent, "cy")
 	.setPosition(10, 100)
 	.setSize(800,20)
-	.setRange(0 , height)
+	.setRange(-100 , 200)
 	.setValue(height / 2)
 	;
 
