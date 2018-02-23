@@ -24,8 +24,7 @@ import tech.lity.rea.skatolo.*;
 import tech.lity.rea.skatolo.events.*;
 import tech.lity.rea.skatolo.gui.controllers.*;
 import tech.lity.rea.skatolo.gui.group.*;
-
-import tech.lity.rea.pointcloud.*;
+import tech.lity.rea.pointcloud.PointCloud;
 import org.openni.*;
 
 import peasy.*;
@@ -89,13 +88,11 @@ void setup(){
 				    kinectAnalysis,
 				    planeProjCalibration);
   depthCameraDevice.setTouch(touchInput);
-
-  touchInput.initHandDetection();
-  touchDetections = touchInput.getTouchDetections();
   
+  // After the start() of the camera.
+  objectDetection = touchInput.initObjectDetection();
   initGui();
-  println(touchDetections + " " + currentCalib + " " + touchDetections[currentCalib].getCalibration());
-  loadCalibrationToGui(touchDetections[currentCalib].getCalibration());
+  loadCalibrationToGui(objectDetection.getCalibration());
 
   //  frameRate(200);
 }
@@ -110,7 +107,7 @@ float normalFilter;
 
 int currentCalib = 0;
 TouchDetectionDepth touchDetections[]; 
-
+ObjectDetection objectDetection;
 Vec3D[] depthPoints;
 IplImage kinectImg;
 IplImage kinectImgDepth;
@@ -141,22 +138,13 @@ void initVirtualCamera(){
 
 
 
-boolean first = true;
-
 void draw(){
-    println("Framerate " + frameRate);
-
-    if(first){
-	//	kinectAnalysis.initWithCalibrations(depthCameraDevice);
-	first = false;
-    }
-
+    //    println("Framerate " + frameRate);
     grabImages();
     updateCalibration();
         
     background(0);
 
-    
     if(mouseControl && cam == null){
 	initVirtualCamera();
     }
@@ -165,45 +153,24 @@ void draw(){
 	cam.beginHUD();
     }
 
-
-    PImage img = ((FingerDetection) touchDetections[2]).getIRImage();
-    
-    if(img != null){
-    	fill(255);
-    	noStroke();
-    	rect(299, 299, 202, 202);
-    	image(img, 300, 300, 200, 200);
-    	noStroke();
-    	// for(PVector v : touchInput.contourList){
-    	//     fill(v.z, 100, 100);
-    	//     ellipse(v.x * 2 + 300,
-    	// 	    v.y * 2 + 300,
-    	// 	    1, 1);
-    	// }
-    }
-
     colorMode(RGB, 255);
     skatolo.draw();
     if(cam != null){
 	cam.endHUD();
     }
 
-    ArrayList<TrackedDepthPoint> points, secondPoints=null;
+    ArrayList<TrackedDepthPoint> points;
 
-    
-    points = touchDetections[currentCalib].getTouchPoints();
-
-    if(currentCalib == 0){
-	secondPoints = ((ArmDetection)(touchDetections[currentCalib])).getTipPoints();
-	points.addAll(secondPoints);
-    }
-
-
+    //    points = touchDetections[currentCalib].getTouchPoints();
     // if(is3D){
     // 	points = touchInput.getTrackedDepthPoints3D();
     // } else {
     // 	points = touchInput.getTrackedDepthPoints2D();
     // }
+
+    points = objectDetection.getTouchPoints();
+    
+    println("Points found " + points.size());
 
     //    colorMode(RGB, 255);
     if(depthVisuType == 0){
@@ -217,7 +184,6 @@ void draw(){
     }
     pointCloud.drawSelf((PGraphicsOpenGL) g);
 
-    
     colorMode(HSB, 20, 100, 100);
     for(TrackedDepthPoint pt : points){
 	Vec3D position = pt.getPositionKinect();
@@ -238,8 +204,7 @@ void draw(){
 
 void updateCalibration(){
 
-    PlanarTouchCalibration calib = touchDetections[currentCalib].getCalibration();
-    
+    PlanarTouchCalibration calib = objectDetection.getCalibration();
     planeCalibration.setHeight(planeHeight);
 
     calib.setMaximumDistance(maxDistance);
@@ -255,13 +220,6 @@ void updateCalibration(){
     calib.setTrackingMaxDistance(trackingMaxDistance);
 
     calib.setPrecision(precision);
-
-    // Tests
-    calib.setTest1(test1);
-    calib.setTest2(test2);
-    calib.setTest3(test3);
-    calib.setTest4(test4);
-    calib.setTest5(test5);
 }
 
 void loadCalibrationToGui(PlanarTouchCalibration calib){
@@ -279,12 +237,6 @@ void loadCalibrationToGui(PlanarTouchCalibration calib){
     trackingMaxDistanceSlider.setValue(calib.getTrackingMaxDistance());
     precisionSlider.setValue(calib.getPrecision());
 
-    // Testing 
-    test1Slider.setValue(calib.getTest1());
-    test2Slider.setValue(calib.getTest2());
-    test3Slider.setValue(calib.getTest3());
-    test4Slider.setValue(calib.getTest4());
-    test5Slider.setValue(calib.getTest5());
 }
 
 
@@ -336,13 +288,8 @@ void saveButton(){
 }
 
 void save(){
-
-    // Save the calibration(s).
-    for (int i = 0; i < touchDetections.length; i++) {
-	String name = Papart.touchCalibrations[i];
-	touchDetections[i].getCalibration().saveTo(this, name);
-    }
-    
-    // Save the plane.
+    // detection
+    objectDetection.getCalibration().saveTo(this, Papart.objectTouchCalib);
+    // plane
     planeProjCalibration.saveTo(this, Papart.planeAndProjectionCalib);
 }
