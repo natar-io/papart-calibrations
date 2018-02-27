@@ -90,23 +90,37 @@ public class MyApp extends PaperTouchScreen {
 
   public void settings() {
     // the size of the draw area is 297mm x 210mm.
-    setDrawingSize(297, 210);
+    setDrawingSize(297, 420);
     // loads the marker that are actually printed and tracked by the camera.
     loadMarkerBoard(Papart.markerFolder + "A4-default.svg", 297, 210);
 
     // the application will render drawings and shapes only on the surface of the sheet of paper.
     setDrawOnPaper();
 
-    setQuality(2);
+    setQuality(4);
   }
 
   public void setup() {
      // Disable the filtering
      // setDrawingFilter(0);
      // setTrackingFilter(0, 0);
+      String[] vm = new String[]{
+	  "/usr/bin/vglrun",
+	  "/opt/genymotion/player",
+	  "--vm-name",
+	  "Custom Phone - 7.0.0 - API 24 - 768x1280"
+      };
 
+      // String[] vm = new String[]{
+      //       "VBoxManage",
+      //       "startvm",
+      //       "Win7"
+      //   };
+
+      runProgram(vm);
+      
      // FireFox paperScreen...
-     runProgram("firefox");
+      // runProgram("firefox");
   }
 
   public void drawOnPaper() {
