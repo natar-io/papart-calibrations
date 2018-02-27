@@ -30,7 +30,7 @@ public void setup() {
     connect();
   prefix = "evt:" + Integer.toString(display) + ":";
   //  papart = Papart.seeThrough(this, 3f);
-  papart = Papart.projection(this, 3f);
+  papart = Papart.projection(this, 2f);
   new MyApp();
   papart.startTracking();
 }
@@ -97,20 +97,20 @@ public class MyApp extends PaperTouchScreen {
     // the application will render drawings and shapes only on the surface of the sheet of paper.
     setDrawOnPaper();
 
-    setQuality(4);
+    setQuality(2);
   }
 
   public void setup() {
      // Disable the filtering
-     setDrawingFilter(0);
-     setTrackingFilter(0, 0);
+     // setDrawingFilter(0);
+     // setTrackingFilter(0, 0);
 
      // FireFox paperScreen...
      runProgram("firefox");
   }
 
   public void drawOnPaper() {
-      // setLocation(63, 45, 0);
+      setLocation(300, 0, 0);
       background(0, 0, 0);
       appInteractWithMouse();
       drawApp();
