@@ -11,7 +11,7 @@ Papart papart;
 // ProjectorDisplay ardisplay;
 ARDisplay ardisplay;
 
-float focal, cx, cy;
+float fx, fy, cx, cy;
 PMatrix3D projIntrinsics;
 
 boolean useProjector = true;
@@ -27,10 +27,12 @@ void settings(){
     parent = this;
 }
 
+PImage projectedImg;
+
 public void setup() {
 
     Papart.projectorCalib = "calib.xml";
-
+    projectedImg = loadImage("calib1.svg.png");
     if(useProjector)
 	Papart.projectionOnly(this);
     else
@@ -42,7 +44,8 @@ public void setup() {
   ardisplay.manualMode();
 
   projIntrinsics = ardisplay.getIntrinsics();
-  focal = projIntrinsics.m00;
+  fx = projIntrinsics.m00;
+  fy = projIntrinsics.m11;
   cx = projIntrinsics.m02;
   cy = projIntrinsics.m12;
 
@@ -73,8 +76,8 @@ void draw() {
     line(width/2 - 100, height/2, width/2 + 100, height/2);
     line(width/2, height/2 - 100, width/2, height/2 + 100);
 
-    projIntrinsics.m00 = focal;
-    projIntrinsics.m11 = focal;
+    projIntrinsics.m00 = fx;
+    projIntrinsics.m11 = fy;
     projIntrinsics.m02 = cx;
     projIntrinsics.m12 = cy;
 
@@ -102,7 +105,7 @@ void draw() {
     g1.noStroke();
     // Invert some elements here if you use mirroring
     // or your projector/camera is inverted in some way
-    g1.scale(-1, 1, 1);
+    g1.scale(1, 1, 1);
 	
     // g1.modelview.apply(objectArdisplayTransfo);
 
@@ -112,7 +115,11 @@ void draw() {
     //  g1.translate(0, -28, 0);
     
     // Height of the camera...
-       g1.translate(0, -30, 0);
+
+    //    g1.translate(0, -30, 0);
+
+    g1.image(projectedImg, -297/2, 0, 297, 210);
+
     g1.fill(50, 50, 200, 70);
     g1.rect(-9, -9, 112, 112);
 

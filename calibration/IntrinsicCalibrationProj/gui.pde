@@ -39,11 +39,17 @@ public class ControlFrame extends PApplet {
     int width = ardisplay.getWidth();
     int height = ardisplay.getHeight();
 
-    skatolo.addSlider("focal").plugTo(parent, "focal")
+    skatolo.addSlider("fx").plugTo(parent, "fx")
 	.setPosition(10, 20)
-	.setRange(900, 1200)
-	.setSize(800,20)
-	.setValue(1000)
+	.setRange(900, 1400)
+	.setSize(800,10)
+	.setValue(1070)
+	;
+    skatolo.addSlider("fy").plugTo(parent, "fy")
+	.setPosition(10, 40)
+	.setRange(900, 1400)
+	.setSize(800,10)
+	.setValue(1070)
 	;
 
     skatolo.addSlider("cx").plugTo(parent, "cx")
@@ -57,7 +63,7 @@ public class ControlFrame extends PApplet {
 	.setPosition(10, 100)
 	.setSize(800,20)
 	.setRange(-100 , 200)
-	.setValue(height / 2)
+	.setValue(5)
 	;
 
   }
