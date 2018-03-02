@@ -1,10 +1,11 @@
 import fr.inria.papart.procam.*;
 import fr.inria.papart.procam.camera.*;
 import fr.inria.papart.procam.display.*;
-import fr.inria.papart.scanner.*;
 import fr.inria.papart.calibration.*;
 
 import fr.inria.papart.depthcam.PointCloud;
+
+
 
 import static org.bytedeco.javacpp.opencv_core.*;
 import org.bytedeco.javacpp.*;
@@ -12,8 +13,8 @@ import org.reflections.*;
 import TUIO.*;
 import toxi.geom.*;
 import org.openni.*;
-import fr.inria.papart.scanner.GrayCode;
-import fr.inria.papart.scanner.*;
+import tech.lity.rea.scanner3d.*;
+import tech.lity.rea.scanner3d.GrayCode;
 
 import peasy.*;
 PeasyCam cam;
