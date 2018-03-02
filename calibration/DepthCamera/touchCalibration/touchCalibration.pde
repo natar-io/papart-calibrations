@@ -141,15 +141,8 @@ void initVirtualCamera(){
 
 
 
-boolean first = true;
-
 void draw(){
     println("Framerate " + frameRate);
-
-    if(first){
-	//	kinectAnalysis.initWithCalibrations(depthCameraDevice);
-	first = false;
-    }
 
     grabImages();
     updateCalibration();
