@@ -217,10 +217,13 @@ void save(PlaneCalibration planeCalib, HomographyCalibration homography){
     // planeCalib.flipNormal();
     planeCalib.moveAlongNormal(planeUp);
 
+    println("SAVE PLANE ONLY");
+    planeCalib.saveTo(this, Papart.planeCalib);
+    
     PlaneAndProjectionCalibration planeProjCalib = new PlaneAndProjectionCalibration();
     planeProjCalib.setPlane(planeCalib);
     planeProjCalib.setHomography(homography);
-    planeProjCalib.saveTo(this, Papart.planeAndProjectionCalib);
+    // planeProjCalib.saveTo(this, Papart.planeAndProjectionCalib);
 
     touchInput.setPlaneAndProjCalibration(planeProjCalib);
     toSave = false;
