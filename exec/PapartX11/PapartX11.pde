@@ -24,21 +24,23 @@ Papart papart;
 String prefix;
 int display = 99;
 
+MyApp app;
+
 public void setup() {
   // application only using a camera
   // screen rendering
     connect();
   prefix = "evt:" + Integer.toString(display) + ":";
-  //  papart = Papart.seeThrough(this, 3f);
-  papart = Papart.projection(this, 2f);
-  new MyApp();
+  papart = Papart.seeThrough(this, 3f);
+  // papart = Papart.projection(this, 2f);
+  app = new MyApp();
   papart.startTracking();
 }
 
 void settings() {
   // the application will be rendered in full screen, and using a 3Dengine.
-    fullScreen(P3D);
-    //    size(640 * 3, 480 * 3, P3D);
+    // fullScreen(P3D);
+    size(640 *2, 480 * 2, P3D);
 }
 
 void draw() {
@@ -78,6 +80,22 @@ void connect() {
 
 public void keyPressed(KeyEvent e) {
     redis.sadd(prefix +"key:pressed",  Integer.toString(e.getKeyCode()));
+
+    if(key == 'C'){
+	app.captureKeyboard();
+    }
+    if(key == 'R'){
+	app.releaseKeyboard();
+    }
+    if(key == 'c'){
+	app.captureMouse();
+	noCursor();
+    }
+    if(key == 'r'){
+	app.releaseMouse();
+	cursor();
+    }
+    
 }
 
 public void keyReleased(KeyEvent e) {
@@ -85,31 +103,47 @@ public void keyReleased(KeyEvent e) {
 }	
 
 
-
 public class MyApp extends PaperTouchScreen {
 
   public void settings() {
     // the size of the draw area is 297mm x 210mm.
-    setDrawingSize(297, 420);
+    setDrawingSize(800 /2 , 600 /2);
     // loads the marker that are actually printed and tracked by the camera.
-    loadMarkerBoard(Papart.markerFolder + "A4-default.svg", 297, 210);
+    loadMarkerBoard(Papart.markerFolder + "A4-default.svg", 800/2, 600/2);
 
     // the application will render drawings and shapes only on the surface of the sheet of paper.
     setDrawOnPaper();
-
-    setQuality(4);
+    
+    setQuality(2);
   }
 
   public void setup() {
      // Disable the filtering
      // setDrawingFilter(0);
      // setTrackingFilter(0, 0);
-      String[] vm = new String[]{
-	  "/usr/bin/vglrun",
-	  "/opt/genymotion/player",
-	  "--vm-name",
-	  "Custom Phone - 7.0.0 - API 24 - 768x1280"
-      };
+
+
+  // String[] vm = new String[]{
+  //          "/usr/bin/vglrun",
+  //          "/usr/bin/processing-java",
+  //          "--sketch=/home/ditrop/sketchbook/glow/",
+  //          "--output=/home/ditrop/sketchbook/glow/build",
+  //          "--force",
+  //          "--run"
+  //      };
+
+
+  String[] vm = new String[]{
+           "/usr/bin/libreoffice"
+       };
+
+  
+      // String[] vm = new String[]{
+      //// 	  "/usr/bin/vglrun",
+      // 	  "/opt/genymotion/player",
+      // 	  "--vm-name",
+      // 	  "Custom Phone - 7.0.0 - API 24 - 768x1280"
+      // };
 
       // String[] vm = new String[]{
       //       "VBoxManage",
@@ -117,11 +151,11 @@ public class MyApp extends PaperTouchScreen {
       //       "Win7"
       //   };
 
-      runProgram(vm);
+  // runProgram(vm);
       
      // FireFox paperScreen...
-      // runProgram("firefox");
-  }
+      runProgram("firefox"); 
+ }
 
   public void drawOnPaper() {
       setLocation(300, 0, 0);
@@ -131,7 +165,7 @@ public class MyApp extends PaperTouchScreen {
       Touch touch = createTouchFromMouse();
 
       fill(255);
-      rect(touch.position.x, touch.position.y, 5, 5);
+      //      rect(touch.position.x, touch.position.y, 5, 5);
       
   }
 }

@@ -44,7 +44,8 @@ void startCamera(){
     try{
 	cameraStarted = true;
 	println("Starting camera");
-	camera = CameraFactory.createCamera(Camera.Type.FFMPEG, ":99.0+0,0", "x11grab");
+	camera = CameraFactory.createCamera(Camera.Type.FFMPEG, ":99", "x11grab");
+	//	camera = CameraFactory.createCamera(Camera.Type.FFMPEG, ":99.0+0,0", "x11grab");
 	camera.setSize(resX, resY);
 	camera.setParent(this);	
 	camera.start();
@@ -53,6 +54,8 @@ void startCamera(){
 	println("Cannot create the camera...");
     }
 }
+
+String prefixPub = "evt:99";
 
 // PImage videoOut;
 void draw() {
@@ -86,6 +89,14 @@ void mouseDragged(){
 }
 
 void mouseMoved(){
+
+    JSONObject ob = new JSONObject();
+    ob.setString("name", "mouseEvent");
+    ob.setInt("x", (int) (mouseX - pmouseX));
+    ob.setInt("y", (int) (mouseY - pmouseY));
+    // ob.setBoolean("pressed", t.pressed);
+    redis.publish(prefixPub, ob.toString());
+    
     redis.set("mouse:x", Integer.toString(mouseX));
     redis.set("mouse:y", Integer.toString(mouseY));
 }
@@ -99,12 +110,22 @@ void mousePressed(){
     println("pressed");
     redis.set("mouse:pressed", Boolean.toString(true));
     redis.set("mouse:pressedButton", Integer.toString(mouseButton));
+
+    JSONObject ob = new JSONObject();
+    ob.setString("name", "mouseEvent");
+    ob.setBoolean("pressed", true);
+    redis.publish(prefixPub, ob.toString());
 }
 
 
 void mouseReleased(){
     redis.set("mouse:pressed", Boolean.toString(false));
     redis.set("mouse:pressedButton", Integer.toString(mouseButton));
+
+    JSONObject ob = new JSONObject();
+    ob.setString("name", "mouseEvent");
+    ob.setBoolean("pressed", false);
+    redis.publish(prefixPub, ob.toString());
 }
 
 public void keyPressed(KeyEvent e) {
