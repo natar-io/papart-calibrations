@@ -15,6 +15,8 @@ import org.bytedeco.javacv.RealSenseFrameGrabber;
 import toxi.geom.*;
 import org.openni.*;
 import peasy.*;
+import fr.inria.papart.calibration.files.HomographyCalibration;
+import redis.clients.jedis.*;
 
 
 PeasyCam cam;
@@ -32,8 +34,6 @@ PApplet parent;
 // gui elements
 float irFx, irFy, irCx, irCy;
 float rgbFx, rgbFy, rgbCx, rgbCy;
-
-
 
 CameraRealSense camRS = null;
 
@@ -81,7 +81,7 @@ void setup() {
     pointCloud = new PointCloudForDepthAnalysis(this, depthAnalysis, skip);
 
     // create a markerboard
-    markerboard = MarkerBoardFactory.create(Papart.markerFolder + "A4-default.svg");
+    markerboard = MarkerBoardFactory.create(Papart.markerFolder + "chili1.svg");
     println("Board " + markerboard);
     // track it with the color camera.
     cameraTracking.track(markerboard);
@@ -113,10 +113,13 @@ void initFocals(){
 }
 
 boolean locked = true;
-
+boolean print = false;
 
 void keyPressed(){
     locked = false;
+    if(key == 'p'){
+	print = !print;
+    }
 }
 
 
@@ -129,7 +132,7 @@ void draw() {
       
   }
       fill(180, 180);  
-  drawModel();
+      //  drawModel();
   drawTrackedSheet();
   drawPointCloud();
       
@@ -144,7 +147,8 @@ void drawModel()
       popMatrix();
 }
 
-
+float rx, ry, rz;
+float tx, ty, tz;
 
 void drawTrackedSheet()
 {
@@ -153,9 +157,33 @@ void drawTrackedSheet()
       g.scale(1, 1, -1);
 
       // extrinsics...
-      g.applyMatrix(extrinsics);
+
+      PMatrix3D extr = new PMatrix3D(1, 0, 0, 0,
+				     0, 1, 0, 0,
+				     0, 0, 1, 0,
+				     0, 0, 0, 1);
+
+      extr.rotateX(rx);
+      extr.rotateY(ry);
+      extr.rotateZ(rz);
+      //      extr.translate(extrinsics.m03, extrinsics.m13, extrinsics.m23);
+      extr.translate(tx, ty, tz);
+
+      PMatrix3D inv = extr.get();
+      inv.invert();
+      
+      depthCameraDevice.setStereoCalibration(extr);
+
+      //      extr.invert();
+      
+      if(print) {
+	  extr.print();
+	  HomographyCalibration.saveMatTo(this, extr, sketchPath() + "/extr.xml");
+      }
+      g.applyMatrix(extr);
+      //      g.applyMatrix(extrinsics);
       g.applyMatrix(p);
-      //  p.print();
+ 
       
       rect(0, 0, 297, 210);
       popMatrix();

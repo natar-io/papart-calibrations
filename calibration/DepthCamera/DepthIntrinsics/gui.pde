@@ -94,7 +94,46 @@ public class ControlFrame extends PApplet {
 	    .setValue(rgbDevice.getCy());
 	    ;
 
-	    
+	skatolo.addSlider("rx").plugTo(parent, "rx")
+	    .setPosition(10, 200)
+	    .setRange(-PI/32, PI/32)
+	    .setSize(800,10)
+	    .setValue(0);
+	;
+	
+	skatolo.addSlider("ry").plugTo(parent, "ry")
+	    .setPosition(10, 210)
+	    .setRange(-PI/32, PI/32)
+	    .setSize(800,10)
+	    .setValue(0);
+	;
+	skatolo.addSlider("rz").plugTo(parent, "rz")
+	    .setPosition(10, 220)
+	    .setRange(-PI/32, PI/32)
+	    .setSize(800,10)
+	    .setValue(0);
+	;
+
+
+	skatolo.addSlider("tx").plugTo(parent, "tx")
+	    .setPosition(10, 230)
+	    .setRange(-30, 30)
+	    .setSize(800,10)
+	    .setValue(-25);
+	;
+	skatolo.addSlider("ty").plugTo(parent, "ty")
+	    .setPosition(10, 240)
+	    .setRange(-30, 30)
+	    .setSize(800,10)
+	    .setValue(0);
+	;
+	skatolo.addSlider("tz").plugTo(parent, "tz")
+	    .setPosition(10, 250)
+	    .setRange(-30, 30)
+	    .setSize(800,10)
+	    .setValue(0);
+	;
+
 	    
     }
 
