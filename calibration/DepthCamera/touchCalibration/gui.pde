@@ -94,7 +94,7 @@ void initGui(){
 
     precisionSlider = skatolo.addSlider("precision")
 	.setPosition(30, 170)
-	.setRange(1, 8)
+	.setRange(1, 12)
 	.setSize(200, 12);
 
     planeHeightSlider = skatolo.addSlider("planeHeight")

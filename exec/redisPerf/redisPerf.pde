@@ -1,3 +1,4 @@
+
 import fr.inria.papart.procam.*;
 import fr.inria.papart.multitouch.*;
 import tech.lity.rea.svgextended.*;
@@ -11,6 +12,11 @@ import fr.inria.papart.procam.display.*;
 
 import fr.inria.guimodes.Mode;
 import de.voidplus.redis.*;
+import java.awt.image.WritableRaster;
+    
+import java.awt.image.BufferedImage;
+import javax.imageio.stream.*;
+import javax.imageio.*;
 
 import java.nio.*;
 import java.io.*;
@@ -25,41 +31,115 @@ void settings() {
 
 void setup() {
   connect();
+  frameRate(45);
 }
 
 
 void draw() {
-    background(0);
+    //    background(0);
     rect(mouseX, mouseY, 10, 10);
      
     loadPixels();
     updatePixels();
-    byte[] id = {(byte) 0};
+
+    // byte[] compressed = jpegCompress();
+    jpegCompress();
+    //    sendRaw();
     
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    ObjectOutput out = null;
-    try {
-	out = new ObjectOutputStream(bos);   
-	out.writeObject(pixels);
-	out.flush();
-	byte[] yourBytes = bos.toByteArray();
-	
-	redis.set(id, yourBytes);
-  }
-    catch(Exception e) {
-	e.printStackTrace();
-  }
-    println("Yo");
+
+    println("framerate: " + frameRate);
 }
 
 void keyPressed() {
 }
 
+void sendRaw(){
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    ObjectOutput out = null;
+    byte[] id = {(byte) 0};
+    try {
+  	out = new ObjectOutputStream(bos);
+	
+	// Pixels directly
+	out.writeObject(pixels);
+	out.flush();
+	byte[] yourBytes = bos.toByteArray();
+	redis.set(id, yourBytes);
+	
+    }
+    catch(Exception e) {
+  	e.printStackTrace();
+    }
+}
+
+
+
+// https://stackoverflow.com/questions/37713773/java-bufferedimage-jpg-compression-without-writing-to-file?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+
+//PImage outputImg = null;
+BufferedImage bimg = null;
+
+void jpegCompress(){
+    try{
+
+
+	if(bimg == null){
+	    //	    outputImg = createImage(width, height, RGB);
+	    bimg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+	}
+
+	// Copy the pixels
+	loadPixels();
+	WritableRaster wr = bimg.getRaster();
+	wr.setDataElements(0, 0, width, height, pixels);
+
+	BufferedImage image =bimg;
+
+	// The important part: Create in-memory stream
+	ByteArrayOutputStream compressed = new ByteArrayOutputStream();
+	ImageOutputStream outputStream = ImageIO.createImageOutputStream(compressed);
+    
+    // NOTE: The rest of the code is just a cleaned up version of your code
+    
+    // Obtain writer for JPEG format
+    ImageWriter jpgWriter = ImageIO.getImageWritersByFormatName("jpg").next();
+    
+    // Configure JPEG compression: 70% quality
+    ImageWriteParam jpgWriteParam = jpgWriter.getDefaultWriteParam();
+    jpgWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+
+    float compression = (float) mouseX / (float) width;
+    jpgWriteParam.setCompressionQuality(compression);
+    
+    // Set your in-memory stream as the output
+    jpgWriter.setOutput(outputStream);
+    
+    // Write image as JPEG w/configured settings to the in-memory stream
+    // (the IIOImage is just an aggregator object, allowing you to associate
+    // thumbnails and metadata to the image, it "does" nothing)
+    jpgWriter.write(null, new IIOImage(image, null, null), jpgWriteParam);
+    
+    // Dispose the writer to free resources
+    jpgWriter.dispose();
+    
+    // Get data for further processing...
+    byte[] jpegData = compressed.toByteArray();
+
+    byte[] id2 = {(byte) 1};
+    redis.set(id2, jpegData);
+
+    }catch(IOException e){
+	System.out.println(e);
+	return;
+    }
+}
+
+
 
 Redis redis;
 
 void connect() {
-  redis = new Redis(this, "127.0.0.1", 6379);
+  redis = new Redis(this, "192.168.0.52", 6379);
   // redis.auth("156;2Asatu:AUI?S2T51235AUEAIU");
 }
 

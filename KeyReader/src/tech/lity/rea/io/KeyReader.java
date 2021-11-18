@@ -17,6 +17,14 @@ import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// Possib: Processing fullscreen APP -> dans un serveur X...
+// Events passent par une lib.
+
+// Possib: appli lis  position feuille 3D, touch events etc... rendu 3D, 
+// idem dans buffer offscreen pour composition avec autres apps // touch.
+
+// Appli,  P3D,  "nom du paperscreen /position". 
+
 /**
  *
  * @author realitytech

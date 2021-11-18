@@ -23,7 +23,7 @@ void settings(){
     if(useProjector)
         fullScreen(P3D);
     else
-        size(640, 480, P3D);
+        size(1280, 720, P3D);
     parent = this;
 }
 
@@ -112,7 +112,7 @@ void draw() {
     //  g1.translate(0, -28, 0);
     
     // Height of the camera...
-       g1.translate(0, -35, 0);
+       g1.translate(0, -30, 0);
     g1.fill(50, 50, 200, 120);
     g1.rect(-9, -9, 112, 112);
 

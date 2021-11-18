@@ -29,6 +29,7 @@ import tech.lity.rea.pointcloud.*;
 import org.openni.*;
 
 import peasy.*;
+import redis.clients.jedis.*;
 
 Skatolo skatolo;
 PeasyCam cam;
@@ -74,7 +75,21 @@ void setup(){
     try{
 	planeProjCalibration = new  PlaneAndProjectionCalibration();
 	planeProjCalibration.loadFrom(this, Papart.planeAndProjectionCalib);
-	planeCalibration = planeProjCalibration.getPlaneCalibration();
+	//	planeCalibration = planeProjCalibration.getPlaneCalibration();
+
+        PlaneAndProjectionCalibration calibration = new PlaneAndProjectionCalibration();
+        HomographyCalibration hc = new HomographyCalibration();
+        hc.loadFrom(this, Papart.homographyCalib);
+
+        // PlaneCalibration pc = new PlaneCalibration();
+        // pc.loadFrom(this, Papart.planeCalib);
+	planeCalibration  = new PlaneCalibration();
+	planeCalibration.loadFrom(this, Papart.planeCalib);
+
+	 planeProjCalibration.setPlane(planeCalibration);
+	// calibration.setPlane(pc);
+        // calibration.setHomography(hc);
+	
     }catch(NullPointerException e){
 	die("Impossible to load the plane calibration...");
     }
@@ -182,9 +197,8 @@ void draw(){
     }
 
     ArrayList<TrackedDepthPoint> points, secondPoints=null;
-
     
-    points = touchDetections[currentCalib].getTouchPoints();
+    points = new ArrayList(touchDetections[currentCalib].getTouchPoints());
 
     if(currentCalib == 0){
 	secondPoints = ((ArmDetection)(touchDetections[currentCalib])).getTipPoints();
@@ -198,6 +212,7 @@ void draw(){
     // 	points = touchInput.getTrackedDepthPoints2D();
     // }
 
+    try{
     //    colorMode(RGB, 255);
     if(depthVisuType == 0){
 	pointCloud.updateWithCamColors(kinectAnalysis, points);
@@ -209,7 +224,9 @@ void draw(){
 	pointCloud.updateWithIDColors(kinectAnalysis, points);
     }
     pointCloud.drawSelf((PGraphicsOpenGL) g);
-
+    }catch(Exception e){
+	e.printStackTrace();
+    }
     
     colorMode(HSB, 20, 100, 100);
     for(TrackedDepthPoint pt : points){

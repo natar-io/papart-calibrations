@@ -42,10 +42,6 @@ public void setup() {
  
     app = new MyApp();
     papart.startTracking();
-
-
-
-    
     try{
 	robot = new Robot();
     } catch(Exception e){
@@ -163,9 +159,9 @@ public class MyApp extends PaperTouchScreen {
 
   public void settings() {
     // the size of the draw area is 297mm x 210mm.
-    setDrawingSize(800 /2 , 600 /2);
+    setDrawingSize(1280 /2 , 1024 /2);
     // loads the marker that are actually printed and tracked by the camera.
-    loadMarkerBoard(Papart.markerFolder + "A4-default-aruco.svg", 800/2, 600/2);
+    loadMarkerBoard(Papart.markerFolder + "A4-default.svg", 1280 /2 , 1024 /2);
 
     // the application will render drawings and shapes only on the surface of the sheet of paper.
     setDrawOnPaper();
@@ -254,6 +250,7 @@ public class MyApp extends PaperTouchScreen {
     void drawTouch(TouchList fingerTouchs){
 	fill(255, 0, 20);
         for (Touch t : fingerTouchs) {
+	    t.id = 2;
 	    PVector p = t.position;
 	    ellipse(p.x, p.y, 10, 10);
 	}

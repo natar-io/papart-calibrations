@@ -20,7 +20,7 @@ boolean useCam = false;
 
 void settings(){
     // fullScreen(P3D);
-    size(1600, 600);
+    size(600, 600);
 }
 
  void setup(){
@@ -71,6 +71,7 @@ void keyPressed() {
 Redis redis;
 
 void connect(){
-    redis = new Redis(this, "127.0.0.1", 6379);
+    redis = new Redis(this, "192.168.0.52", 6379);
+    //    redis = new Redis(this, "127.0.0.1", 6379);
     // redis.auth("156;2Asatu:AUI?S2T51235AUEAIU");
 }
