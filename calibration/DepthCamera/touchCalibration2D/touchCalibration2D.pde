@@ -14,10 +14,10 @@ import fr.inria.papart.calibration.*;
 import fr.inria.papart.calibration.files.*;
 
 import toxi.geom.*;
-import org.bytedeco.javacpp.opencv_core.IplImage;
-import org.bytedeco.javacpp.freenect;
+import org.bytedeco.opencv.opencv_core.IplImage;
+// import org.bytedeco.javacpp.freenect;
 import org.bytedeco.javacv.RealSenseFrameGrabber;
-import org.bytedeco.javacpp.opencv_core.*;
+import org.bytedeco.opencv.opencv_core.*;
 import java.nio.IntBuffer;
 
 import tech.lity.rea.skatolo.*;
@@ -105,7 +105,7 @@ void setup(){
   
   // After the start() of the camera.
   touchInput.initTouchDetections();
-  touch2D = touchInput.getTouchDetectionSimple2D();
+  touch2D = touchInput.getTouchDetectionD();
   initGui();
   loadCalibrationToGui(touch2D.getCalibration());
 

@@ -9,8 +9,9 @@ import tech.lity.rea.pointcloud.*;
 import tech.lity.rea.svgextended.PShapeSVGExtended;
 
 import org.bytedeco.javacv.*;
-import org.bytedeco.javacpp.opencv_core.*;
-import org.bytedeco.javacpp.freenect;
+// import org.bytedeco.javacpp.opencv_core.*;
+import org.bytedeco.opencv.opencv_core.*;
+// import org.bytedeco.javacpp.freenect;
 import org.bytedeco.javacv.RealSenseFrameGrabber;
 import toxi.geom.*;
 import org.openni.*;
@@ -81,7 +82,7 @@ void setup() {
     pointCloud = new PointCloudForDepthAnalysis(this, depthAnalysis, skip);
 
     // create a markerboard
-    markerboard = MarkerBoardFactory.create(Papart.markerFolder + "chili1.svg");
+    markerboard = MarkerBoardFactory.create(Papart.markerFolder + "calib1.svg");
     println("Board " + markerboard);
     // track it with the color camera.
     cameraTracking.track(markerboard);
